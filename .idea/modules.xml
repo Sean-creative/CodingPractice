@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/CodingPracticeGit.iml" filepath="$PROJECT_DIR$/.idea/CodingPracticeGit.iml" />
       <module fileurl="file://$PROJECT_DIR$/bsidePrac/bsidePrac.iml" filepath="$PROJECT_DIR$/bsidePrac/bsidePrac.iml" />
+      <module fileurl="file://$PROJECT_DIR$/javaScript/javaScript.iml" filepath="$PROJECT_DIR$/javaScript/javaScript.iml" />
     </modules>
   </component>
 </project>

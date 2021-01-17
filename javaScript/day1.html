@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>day1</title>
+</head>
+
+<body>
+    <script>
+
+        //함수 표현식
+        const a = function() {console.log("함수 표현식");}
+        a();
+
+        //함수 선언문
+        function b() {console.log("함수 선언문");}
+        b();
+
+        //즉시 실행 함수 - 함수 정의와 동시에 즉시 호출되는 즉시 실행 함수는 단 한 번만 호출된다.
+        // IIFE = Immediately Invoked Function Expression
+        // 익명 즉시 실행 함수 vs 기명 즉시 실행 함수(식별자가 있어도 어차피 영역넘어가면 다시 호출 불가능)
+        //'var'라고 할지라도 지역변수가 되어버린다.
+        (function () {var foo =10;}());
+        // console.log(foo); //Uncaught ReferenceError: foo is not defined
+
+        // 즉시 실행 함수는 반드시 그룹 연산자'( )' 로 감싸야 한다!
+        // IIFE도 일반 함수처럼 인수를 전달할 수 있다.
+        const res = (function (a, b) {
+            return a * b;
+        }(3,5));
+        console.log(res);
+
+
+    </script>
+
+
+</body>
+</html>
