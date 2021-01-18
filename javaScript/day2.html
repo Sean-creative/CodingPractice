@@ -37,6 +37,36 @@
 
 
 
+
+
+    // _ => { }에 대하여...
+    //그것은 매개 변수를 신경 쓰지 않을 때 사용되는 관습이다.
+    //왜냐하면 람다 표현은 짧은 익명의 코드에 주로 사용되기 때문에 변수의 이름이 때때로 필수적이지 않기 때문에 코드 블록에서 변수를 사용하지 않아도 _을 짧게 줄 뿐이다.
+    //그것은 매개 변수 이름이지만, 비록 유용한 것은 아니지만, 코드를 컴파일하기 위해 표현식에 매개 변수가 있다고 명시할 필요가 있을 때
+    // (일부 관습에 의해) 일반적으로 사용되는 이름이지만, 당신은 그것에 대해 별로 신경 쓰지 않기 때문에 그냥 무시하려고 한다.
+    const _ = 3;
+    console.log(_); // 3
+
+    const f1 = () => { } // A function taking no arguments
+    const f2 = _=> { }  // A function with one argument that doesn't use it
+
+    function h(ff) {
+        if (ff.length === 0) {
+            console.log("No argument function - calling directly");
+            ff();
+        } else if (ff.length === 1) {
+            console.log("Single argument function - calling with 1");
+            ff(1);
+        }
+    }
+
+    h(f1);
+    h(f2);
+
+
+    const aaa =  _ => {console.log('!!!');}
+    aaa(1,2,3);
+
     </script>
 
 
