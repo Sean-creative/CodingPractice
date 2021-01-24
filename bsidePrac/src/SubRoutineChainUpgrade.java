@@ -2,9 +2,8 @@
 //day1 - 꼬리 물기 최적화
 
 
-// 1. for문으로 -> 1~10 sum
-// 2. 꼬리물기 최적화 적용 -> 1~10 sum
-// 3. 꼬리물기 최적화가 적용X -> 1~10 sum
+//꼬리물기 최적화가 안되어있는 for문
+// 꼬리물기 최적화 되어있는 ..?
 public class SubRoutineChainUpgrade {
     public static void main(String[] args) {
 
