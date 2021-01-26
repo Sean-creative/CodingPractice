@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+
+   // arr.length는 5다.
+   // sum = 21
+   const arr = [1,2,[1,2,3,[1,2]],4,5];
+
+    const sum = function (arr, i) {
+        if(i==arr.length) return 0;
+        // else return arr[i] + sum(arr, i+1)
+
+        //숫자라면
+        else if (!isNaN(arr[i])) {
+            return arr[i] + sum(arr, i+1);
+        }
+
+        //배열이라면
+        else if (Array.isArray(arr[i])) {
+            return sum(arr[i], 0) + sum(arr, i+1);
+        }
+        else {
+            return 0;
+        }
+    }
+    console.log(sum(arr, 0));
+
+</script>
+
+</body>
+</html>
