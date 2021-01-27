@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    //은닉과 캡슐화를 고려해서 다시 작성해 볼 것!
+    //제어문으로 바꾸기, 스택얘기 생각하기
+    class Stack {
+        constructor() {
+            this.store = [];
+        }
+
+        push(item) {
+            this.store.push(item);
+        }
+
+        pop() {
+            return this.store.pop();
+        }
+
+        size() {
+            return this.store.length;
+        }
+    }
+
+    const _sum = function (arr, i, acc, stack) {
+       //종료되는 시점 -> 1.arr을 전부 돌았는가?  2.stack을 다비웠는가?
+
+        if (i === arr.length) {
+            if (stack.size() !== 0) {
+                const stackArr = stack.pop();
+                return _sum(stackArr[0], stackArr[1], acc, stack);
+            } else {
+                return acc;
+            }
+        } //end if
+
+        //배열이라면
+        if (Array.isArray(arr[i])) {
+            //stack에는 [돌아가야하는 배열(arr), 계산하고 돌아갈 위치(i+1)]
+            stack.push([arr, i + 1]);
+            return _sum(arr[i], 0, acc, stack);
+        }
+        //숫자라면
+        else if (!isNaN(arr[i])) {
+            return _sum(arr, i + 1, acc + arr[i], stack);
+        }
+        else {
+            //숫자나 배열도 아니라면, 0을 더해주고 pass
+            return _sum(arr, i + 1, acc + 0, stack);
+        }
+    }
+
+    const sum = function(arr){
+        const stack = new Stack();
+        return _sum(arr, 0, 0, stack);
+    }
+
+    const arr = [1,[2,[3,[4,'가',5],6],7],8,[9,[10]],'나']; // sum = 55
+    // const arr = [1,2,[3]]; // sum = 6
+    console.log(sum(arr));
+</script>
+
+</body>
+</html>
