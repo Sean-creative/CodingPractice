@@ -9,36 +9,36 @@
     //꼬리물기 최적화를 제어문으로 바꿔볼 것!
 
     // const arr = [1,[2,[3,[4,'가',5],6],7],8,[9,[10]],'나']; // sum = 55
-    const arr = [1,[2,3],4]; // sum = 6
+    const arr = [1, [2, 3], 4]; // sum = 6
     // const arr = [1, 2, 3]; // sum = 6
     // const fStack = [[arr, 0]];
-    const fStack = [{arr, idx:0}];
+    const fStack = [{arr, idx: 0}];
     const subStack = [];
     let acc = 0;
 
     while (fStack.length > 0) {
 
         let {arr, idx} = fStack.pop();
-        // arr = [1, 2, [3]];
+
         if (arr.length == idx) {
             // let {arr:arr2, idx:idx2} = subStack.pop();
             let a = subStack.pop();
-            arr=a.arr;
-            idx=a.idx;
+            arr = a.arr;
+            idx = a.idx;
             // arr=arr2;
             // idx=idx2;
-        }
+        } else {
+            //배열일 때
+            if (Array.isArray(arr[idx])) {
+                subStack.push({arr: arr, idx: idx + 1}); //끝내고 돌아갈 곳
+                fStack.push({arr: arr[idx], idx: 0});
+            }
 
-        //배열일 때
-        if (Array.isArray(arr[idx])) {
-            subStack.push({arr:arr,idx:idx+1}); //끝내고 돌아갈 곳
-            fStack.push({arr:arr[idx],idx:0});
-        }
-
-        //숫자일 때
-        else if (!isNaN(arr[idx])) {
-            acc += arr[idx];
-            fStack.push({arr,idx:idx+1});
+            //숫자일 때
+            else if (!isNaN(arr[idx])) {
+                acc += arr[idx];
+                fStack.push({arr, idx: idx + 1});
+            }
         }
     }
     console.log(acc);
