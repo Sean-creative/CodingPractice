@@ -7,12 +7,12 @@
 <body>
 <script>
 
-   // arr.length는 5다.
-   // sum = 21
-   const arr = [1,2,[1,2,3,[1,2]],4,5];
+   //배열안에 배열들을 더한다. 꼬리물기 최적화(X)
+
+   const arr = [1,2,[1,2,3,[1,2]],4,5]; // sum = 21
 
     const sum = function (arr, i) {
-        if(i==arr.length) return 0;
+        if(i===arr.length) return 0;
         // else return arr[i] + sum(arr, i+1)
 
         //숫자라면
