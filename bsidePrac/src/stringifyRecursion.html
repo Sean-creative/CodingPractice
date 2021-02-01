@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    //js array stringify
+    //목표 문자열 → "[1,2,3,["",2,""]]"
+    //typeof 로 switch 분기, "number", "string", "boolean"
+    //과제 - 재귀와 루프를 둘 다 -> array stringify로 짜기
+    //arr.Stringify(arr) == JSON.stringify(arr)  -> true!!
+    const arr = [1, "안녕", [2], true];
+    const fStack = [{arr, idx: 0}];
+    const subStack = [];
+    let acc = 0;
+
+    const sum = _ => {
+        while (fStack.length > 0) {
+
+            const {arr, idx} = fStack.pop();
+
+            if (arr.length === idx) {
+                if (subStack.length > 0) {
+                    fStack.push(subStack.pop());
+                }
+            } else {
+                //배열일 때
+                if (Array.isArray(arr[idx])) {
+                    subStack.push({arr: arr, idx: idx + 1}); //끝내고 돌아갈 곳
+                    fStack.push({arr: arr[idx], idx: 0});
+                }
+
+                //숫자일 때
+                else if (!isNaN(arr[idx])) {
+                    acc += arr[idx];
+                    fStack.push({arr, idx: idx + 1});
+                }
+
+                //그외 일 때
+                else {
+                    fStack.push({arr, idx: idx + 1});
+                }
+            }
+        }
+        console.log(acc);
+    }
+    sum();
+
+
+</script>
+
+</body>
+</html>
