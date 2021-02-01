@@ -16,37 +16,37 @@
     const subStack = [];
     let acc = 0;
 
-    while (fStack.length > 0) {
+    const sum = _ => {
+        while (fStack.length > 0) {
 
-        const {arr, idx} = fStack.pop();
+            const {arr, idx} = fStack.pop();
 
-        if (arr.length === idx) {
-            if (subStack.length > 0) {
-                fStack.push(subStack.pop());
-            }
-        } else {
-            //배열일 때
-            if (Array.isArray(arr[idx])) {
-                subStack.push({arr: arr, idx: idx + 1}); //끝내고 돌아갈 곳
-                fStack.push({arr: arr[idx], idx: 0});
-            }
+            if (arr.length === idx) {
+                if (subStack.length > 0) {
+                    fStack.push(subStack.pop());
+                }
+            } else {
+                //배열일 때
+                if (Array.isArray(arr[idx])) {
+                    subStack.push({arr: arr, idx: idx + 1}); //끝내고 돌아갈 곳
+                    fStack.push({arr: arr[idx], idx: 0});
+                }
 
-            //숫자일 때
-            else if (!isNaN(arr[idx])) {
-                acc += arr[idx];
-                fStack.push({arr, idx: idx + 1});
-            }
+                //숫자일 때
+                else if (!isNaN(arr[idx])) {
+                    acc += arr[idx];
+                    fStack.push({arr, idx: idx + 1});
+                }
 
-            //그외 일 때
-            else {
-                fStack.push({arr, idx: idx + 1});
+                //그외 일 때
+                else {
+                    fStack.push({arr, idx: idx + 1});
+                }
             }
         }
+        console.log(acc);
     }
-    console.log(acc);
-
-
-
+    sum();
 
 
 </script>
