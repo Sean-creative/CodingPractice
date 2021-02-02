@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>stringifyLoop</title>
 </head>
 <body>
 <script>
@@ -13,63 +13,47 @@
     //arr.Stringify(arr) == JSON.stringify(arr)  -> true!!
 
     const _sum = function (arr, i, acc, stack) {
-        //종료되는 시점 -> 1.arr을 전부 돌았는가?  2.stack을 다비웠는가?
+        //배열과 객체에 대해서는 구분하지 않음
 
         if (i === arr.length) {
             if (stack.length !== 0) {
-                const stackArr = stack.pop();
-                return _sum(stackArr[0], stackArr[1], acc, stack);
+                const [arr, i] = stack.pop();
+                return _sum(arr, i, acc.slice(0, -1) + '],', stack);
             } else {
-                return acc;
+                return acc.slice(0, -1) + ']';
             }
-        } //end if
+        }
 
         const type = typeof arr[i];
         switch (type) {
-            case "number": {
-                return _sum(arr, i + 1, acc + arr[i] +",", stack);
-            }
+            case "number":
             case "boolean": {
-                return _sum(arr, i + 1, acc + arr[i] +",", stack);
+                return _sum(arr, i + 1, acc + arr[i] + ",", stack);
             }
             case "string": {
-                return _sum(arr, i + 1, acc +"\""+arr[i]+"\"" +",", stack);
+                return _sum(arr, i + 1, acc + "\"" + arr[i] + "\"" + ",", stack);
             }
             case "object": {
-                //stack에는 [돌아가야하는 배열(arr), 계산하고 돌아갈 위치(i+1)]
                 stack.push([arr, i + 1]);
-                return _sum(arr[i], 0, "["+acc, stack);
+                return _sum(arr[i], 0, acc + "[", stack);
             }
-
         }
-
-        // //배열이라면
-        // if (Array.isArray(arr[i])) {
-        //     //stack에는 [돌아가야하는 배열(arr), 계산하고 돌아갈 위치(i+1)]
-        //     stack.push([arr, i + 1]);
-        //     return _sum(arr[i], 0, acc, stack);
-        // }
-        // //숫자라면
-        // else if (!isNaN(arr[i])) {
-        //     return _sum(arr, i + 1, acc + arr[i], stack);
-        // }
-        // else {
-        //     //숫자나 배열도 아니라면, 0을 더해주고 pass
-        //     return _sum(arr, i + 1, acc + 0, stack);
-        // }
-
     }
 
-    const sum = function(arr){
+    const sum = function (arr) {
         return _sum(arr, 0, "[", []);
     }
 
-    const arr = [1, "안녕", [2], true];
-    console.log(sum(arr));
-    console.log(sum(arr)===JSON.stringify(arr));
+    // const arr = [1, 2, 3];
+    // const arr = [1, 2, true];
+    // const arr = [1, 2, true, '안녕'];
+    // const arr = [1,2,3,["",2,""]];
+    const arr = [1, "안녕", [2, "하이"], true];
+    console.log('sum(arr) = ' + sum(arr));
+    console.log('JSON.stringify(arr) = ' + JSON.stringify(arr));
+    console.log('sum(arr) === JSON.stringify(arr) ==> ' + (sum(arr) === JSON.stringify(arr)));
 
 
 </script>
-
 </body>
 </html>

@@ -14,8 +14,8 @@
 
         if (i === arr.length) {
             if (stack.length !== 0) {
-                const stackArr = stack.pop();
-                return _sum(stackArr[0], stackArr[1], acc, stack);
+                const [arr,i] = stack.pop();
+                return _sum(arr, i, acc, stack);
             } else {
                 return acc;
             }
