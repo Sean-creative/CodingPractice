@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>stringifyLoop2</title>
+</head>
+<body>
+<script>
+
+    const _stringify = function (arr, i, acc, stack) {
+        //배열과 객체에 대해서는 구분하지 않음
+
+        if (i === arr.length) {
+            if (stack.length !== 0) {
+                const [arr, i] = stack.pop();
+                return _stringify(arr, i, acc.slice(0, -1) + '],', stack);
+            } else {
+                return acc.slice(0, -1) + ']';
+            }
+        }
+
+        const type = typeof arr[i];
+        switch (type) {
+            case "number":
+            case "boolean": {
+                return _stringify(arr, i + 1, acc + arr[i] + ",", stack);
+            }
+            case "string": {
+                return _stringify(arr, i + 1, acc + "\"" + arr[i] + "\"" + ",", stack);
+            }
+            case "object": {
+                stack.push([arr, i + 1]);
+                return _stringify(arr[i], 0, acc + "[", stack);
+            }
+        }
+    }
+
+    const stringify = function (arr) {
+        return _stringify(arr, 0, "[", []);
+    }
+
+    // const arr = [1,2,3,["",2,""]];
+    const arr = [1, "안녕", [2, "하이"], true];
+    console.log('stringify(arr) = ' + stringify(arr));
+    console.log('JSON.stringify(arr) = ' + JSON.stringify(arr));
+    console.log('stringify(arr) === JSON.stringify(arr) ==> ' + (stringify(arr) === JSON.stringify(arr)));
+
+
+</script>
+</body>
+</html>

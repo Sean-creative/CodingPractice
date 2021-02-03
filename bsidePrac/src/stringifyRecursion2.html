@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>stringifyRecursion2</title>
+</head>
+<body>
+<script>
+
+    const arr = [1, "안녕", [2, "하이"], true];
+    const fStack = [{arr, idx: 0}];
+    const subStack = [];
+    let acc = "[";
+
+    const stringify = (fStack) => {
+        while (fStack.length > 0) {
+
+            const {arr, idx} = fStack.pop();
+
+            if (arr.length === idx) {
+                if (subStack.length > 0) {
+                    acc = acc.slice(0, -1) + '],';
+                    fStack.push(subStack.pop());
+                }
+            } else {
+                const type = typeof arr[idx];
+                switch (type) {
+                    case "number":
+                    case "boolean": {
+                        acc = acc + arr[idx] + ",";
+                        fStack.push({arr, idx: idx + 1});
+                        break;
+                    }
+                    case "string": {
+                        acc = acc + "\"" + arr[idx] + "\",";
+                        fStack.push({arr, idx: idx + 1});
+                        break;
+                    }
+                    case "object": {
+                        acc += "["
+                        subStack.push({arr: arr, idx: idx + 1}); //끝내고 돌아갈 곳
+                        fStack.push({arr: arr[idx], idx: 0});
+                        break;
+                    }
+                }
+            }
+        }
+        acc = acc.slice(0, -1) + ']';
+        console.log('stringify(fStack) = ' + acc);
+        console.log('JSON.stringify(arr) = ' + JSON.stringify(arr));
+        console.log('stringify(arr) === JSON.stringify(arr) ==> ' + (acc === JSON.stringify(arr)));
+    }
+
+    stringify(fStack);
+
+
+</script>
+
+</body>
+</html>
