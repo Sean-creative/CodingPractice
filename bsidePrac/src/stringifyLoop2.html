@@ -7,44 +7,50 @@
 <body>
 <script>
 
-    const _stringify = function (arr, i, acc, stack) {
-        //배열과 객체에 대해서는 구분하지 않음
-
-        if (i === arr.length) {
-            if (stack.length !== 0) {
-                const [arr, i] = stack.pop();
-                return _stringify(arr, i, acc.slice(0, -1) + '],', stack);
+    const _stringify = function (arr, idx, acc, subAcc, stack) {
+        acc += subAcc;
+        if (idx === arr.length) {
+            if (stack.length > 0) {
+                const [arr, idx] = stack.pop();
+                return _stringify(arr, idx, acc.slice(0, -1) + '],', "", stack);
             } else {
                 return acc.slice(0, -1) + ']';
             }
         }
 
-        const type = typeof arr[i];
+        const type = typeof arr[idx];
         switch (type) {
             case "number":
             case "boolean": {
-                return _stringify(arr, i + 1, acc + arr[i] + ",", stack);
+                if(isNaN(arr[idx]))
+                    return "error - invalid value";
+                return _stringify(arr, idx + 1, acc, `${arr[idx]},`, stack);
             }
             case "string": {
-                return _stringify(arr, i + 1, acc + "\"" + arr[i] + "\"" + ",", stack);
+                return _stringify(arr, idx + 1, acc, `"${arr[idx]}",`, stack);
             }
             case "object": {
-                stack.push([arr, i + 1]);
-                return _stringify(arr[i], 0, acc + "[", stack);
+                //배열이 아닌 객체는 default로 처리됨
+                if (arr[idx] instanceof Array) {
+                    stack.push([arr, idx + 1]);
+                    return _stringify(arr[idx], 0, acc, "[", stack);
+                }
+            }
+            default : {
+                return "error - invalid value";
             }
         }
     }
 
     const stringify = function (arr) {
-        return _stringify(arr, 0, "[", []);
+        return _stringify(arr, 0, "[", "", []);
     }
 
-    // const arr = [1,2,3,["",2,""]];
+    // const arr = [1, "안녕", [2, "하이"], true, {a:0}, null, NaN, undefined];
     const arr = [1, "안녕", [2, "하이"], true];
     console.log('stringify(arr) = ' + stringify(arr));
     console.log('JSON.stringify(arr) = ' + JSON.stringify(arr));
     console.log('stringify(arr) === JSON.stringify(arr) ==> ' + (stringify(arr) === JSON.stringify(arr)));
-
 
 </script>
 </body>
