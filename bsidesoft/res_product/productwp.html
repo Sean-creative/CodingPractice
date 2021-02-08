@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>bluebasketAdmin 품목 등록 Test Code</title>
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1"/>
+    <style>
+        body{margin:0;padding:0}
+        #doc{margin:10px}
+    </style>
+</head>
+<body>
+<script src="../core/bs.js"></script>
+<script src="../core/test.js"></script>
+<script src="../core/test-extend.js"></script>
+<script src="../common/api.js"></script>
+<script src="../vendor/vendorJSON.js"></script>
+<script src="../product/productJSON.js"></script>
+<script>
+
+    TEST.add(
+        bs('vendor/wp')('ready for test', '제조사 등록', ...VENDOR.vendorwp()),
+        bs('product/w')('ready for test', '품목 등록 준비', ...PRODUCT.productw()),
+
+        bs('product/wp')('case3', 'title 없음', ...PRODUCT.productwpex("title")),
+        bs('product/wp')('case4', 'title 타입 Str 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["title",1234],["key", "error"]
+        )),
+        bs('product/wp')('case5', 'title 빈값', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["title",""],
+            ["key", "case 5"]
+        )),
+        bs('product/wp')('case6', 'title 길이 200 초과', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["title","1234512345123451234512345123451234512345123451234512345123451234512345123451234512345123451234512345123451234512345123451234512345123451234512345123451234512345123451234512345123451234512345123451234512345123451234512345"],
+            ["key", "case 6"]
+        )),
+        bs('product/wp')('case7', 'stockCnt 없음', ...PRODUCT.productwpex("stockCnt")),
+        bs('product/wp')('case8', 'stockCnt 타입 Long 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["stockCnt","1234"],
+            ["key", "case 8"]
+        )),
+        bs('product/wp')('case9', 'stockCnt 0~9,999,999 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["stockCnt",456456456456456456456456],
+            ["key", "case 9"]
+        )),
+        bs('product/wp')('case10', 'isTemp 없음', ...PRODUCT.productwpex("isTemp")),
+        bs('product/wp')('case11', 'isTemp 타입 bool 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["isTemp",1234],
+            ["key", "error"]
+        )),
+        bs('product/wp')('case12', 'limitCnt  없음', ...PRODUCT.productwpex("limitCnt")),
+        bs('product/wp')('case13', 'limitCnt  타입 Long 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["limitCnt","1234"],
+            ["key", "case 13"]
+        )),
+        bs('product/wp')('case14', 'limitCnt  0~9,999,999 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["limitCnt",456456456456456456456456],
+            ["key", "case 14"]
+        )),
+        bs('product/wp')('case15', 'isActive 없음', ...PRODUCT.productwpex("isActive")),
+        bs('product/wp')('case16', 'isActive 타입 Str 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["isActive", 0],
+            ["key", "error"]
+        )),
+        bs('product/wp')('case17', 'vendorR 없음', ...PRODUCT.productwpex("vendorR")),
+        bs('product/wp')('case18', 'vendorR 타입 Long 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["vendorR ","1234"],
+            ["key", "case 18"]
+        )),
+        // 제조사 등록 하고
+        // 제조사 삭제하고
+        //밑에 r값 넣어줘야함.
+        bs('product/wp')('case19', 'vendorR 유효x', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["vendorR ","???"],
+            ["key", "error"]
+        )),
+
+
+
+        bs('product/wp')('case20', 'price 없음', ...PRODUCT.productwpex("price")),
+        bs('product/wp')('case21', 'price 타입 Str 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["price",1234],
+            ["key", "error"]
+        )),
+        bs('product/wp')('case22', 'price Str을 Long으로 변환했을 시, 숫자가 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["price","1231241adsfasdf"],
+            ["key", "case 22"]
+        )),
+        bs('product/wp')('case23', 'price 0~9,999,999 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["price","1231231231231231231231"],
+            ["key", "case 23"]
+        )),
+        bs('product/wp')('case24', 'originPrice  없음', ...PRODUCT.productwpex("originPrice ")),
+        bs('product/wp')('case25', 'originPrice 타입 Str 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["originPrice",1234],
+            ["key", "error"]
+        )),
+        bs('product/wp')('case26', 'originPrice Str을 Long으로 변환했을 시, 숫자가 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["originPrice","1231241adsfasdf"],
+            ["key", "error"]
+        )),
+        bs('product/wp')('case27', 'originPrice 0~9,999,999 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["originPrice","1231231231231231231231"],
+            ["key", "case 27"]
+        )),
+        bs('product/wp')('case28', 'originPrice가 price 보다 낮음', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["originPrice","1000"],
+            ["price","1100"],
+            ["key", "case 28"]
+        )),
+
+        bs('product/wp')('case29', 'thumbnail 없음', ...PRODUCT.productwpex("thumbnail")),
+        bs('product/wp')('case30', 'thumbnail 타입 Str 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["thumbnail",1234],["key", "error"]
+        )),
+        bs('product/wp')('case31', 'thumbnail 빈값', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["thumbnail",""],
+            ["key", "case 31"]
+        )),
+        bs('product/wp')('case32', 'thumbnail url 형식 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["thumbnail","ㅁㄴㅇㅁ"],
+            ["key", "error"]
+        )),
+        bs('product/wp')('case33', 'imageList 없음', ...PRODUCT.productwpex("imageList")),
+        bs('product/wp')('case34', 'imageList 타입 배열 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["imageList",1234],
+            ["key", "error"]
+        )),
+        bs('product/wp')('case35', 'imageList 빈배열', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["imageList",[]],
+            ["key", "case 35"]
+        )),
+        bs('product/wp')('case36', 'imageList 원소 타입 Str 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["imageList",[1231]],
+            ["key", "error"]
+        )),
+        bs('product/wp')('case37', 'imageList 원소 url 형식 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["imageList",["!23"]],
+            ["key", "error"]
+        )),
+
+        bs('product/wp')('case38', 'desc 없음', ...PRODUCT.productwpex("desc")),
+        bs('product/wp')('case39', 'desc 타입 Str 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["desc",1234],
+            ["key", "error"]
+        )),
+        bs('product/wp')('case40', 'descImgList 없음', ...PRODUCT.productwpex("descImgList")),
+        bs('product/wp')('case41', 'descImgList 타입 배열아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["descImgList",1234],
+            ["key", "error"]
+        )),
+        bs('product/wp')('case42', 'descImgList 원소 타입 Str 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["descImgList",[1234]],
+            ["key", "error"]
+        )),
+        bs('product/wp')('case43', 'descImgList 원소 url 형식 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["descImgList",["!23"]],
+            ["key", "error"]
+        )),
+
+        bs('product/wp')('case44', 'ship 없음', ...PRODUCT.productwpex("ship")),
+        bs('product/wp')('case45', 'ship 타입 Str 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["ship",0],
+            ["key", "error"]
+        )),
+        bs('product/wp')('case46', 'ship 0 or 1이 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["ship",2],
+            ["key", "error"]
+        )),
+        bs('product/wp')('case47', 'info 없음', ...PRODUCT.productwpex("info")),
+        bs('product/wp')('case48', 'info 타입 str 아님', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["info",1234],
+            ["key", "error"]
+        )),
+        bs('product/wp')('case49', 'info 빈 값', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["info",""],
+            ["key", "case 49"]
+        )),
+
+
+        //제조사 잘 써먹고 마지막에 삭제
+        bs('vendor/dp')("delete vendor",'제조사 삭제', {r:_=>bs("clear case_vendorR")}, v=>v.data )
+    );
+    TEST.start('품목 등록');
+
+</script>
+</body>
+</html>

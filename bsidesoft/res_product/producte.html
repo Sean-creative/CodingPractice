@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>bluebasketAdmin 품목 수정 준비 Test Code</title>
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1"/>
+    <style>
+        body{margin:0;padding:0}
+        #doc{margin:10px}
+    </style>
+</head>
+<body>
+<script src="../core/bs.js"></script>
+<script src="../core/test.js"></script>
+<script src="../core/test-extend.js"></script>
+<script src="../common/api.js"></script>
+<script src="../vendor/vendorJSON.js"></script>
+<script src="../product/productJSON.js"></script>
+<script>
+
+    TEST.add(
+        bs('vendor/wp')('ready for test', '제조사 등록', ...VENDOR.vendorwp()),
+        bs('product/w')('ready for test', '품목 등록 준비', ...PRODUCT.productw()),
+        bs('product/wp')('ready for test', '품목 등록', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")]
+        )),
+        bs('product/e')('case 3', 'r값이 없는 경우', ...PRODUCT.producteex("r")),
+        bs('product/e')('case 4', 'r값의 타입이 다른 경우', ...PRODUCT.productechange(
+            ["r", "히히"],
+            ["key", "case 4"]
+        )),
+        bs('product/wp')('ready for case 5', '품목 등록', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")]
+        )),
+        //TODO:삭제기능 생기면 추가
+        bs('product/e')('case 5', 'r값이 유효하지 않은 경우', ...PRODUCT.productechange(
+            ["r", _=>bs("ready for case 5_productR")],
+            ["key", "case 5"]
+        )),
+        bs('product/e')('clear case', '품목 수정 준비 성공', ...PRODUCT.productechange(
+            ["r", _=>bs("ready for test_productR")]
+        ))
+        //후처리 필요
+    );
+    TEST.start('품목 수정 준비');
+
+</script>
+</body>
+</html>

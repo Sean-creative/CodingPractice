@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>bluebasketAdmin 품목 수정 Test Code</title>
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1"/>
+    <style>
+        body{margin:0;padding:0}
+        #doc{margin:10px}
+    </style>
+</head>
+<body>
+<script src="../core/bs.js"></script>
+<script src="../core/test.js"></script>
+<script src="../core/test-extend.js"></script>
+<script src="../common/api.js"></script>
+<script src="../vendor/vendorJSON.js"></script>
+<script src="../product/productJSON.js"></script>
+<script>
+
+    TEST.add(
+        bs('vendor/wp')('ready for test', '제조사 등록', ...VENDOR.vendorwp()),
+        bs('product/w')('ready for test', '품목 등록 준비', ...PRODUCT.productw()),
+        bs('product/wp')('ready for test', '품목 등록', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")]
+        )),
+        bs('product/ep')('ready for test', '품목 수정 준비', ...PRODUCT.productechange(
+            ["r", _=>bs("ready for test_productR")]
+        )),
+
+        bs('product/ep')('case 3', 'title 없는 경우', ...PRODUCT.productepex("title")),
+        bs('product/ep')('case 4', 'title 빈값인 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["title", ""],
+            ["key", "case 4"]
+        )),
+        bs('product/ep')('case 5', 'title 200자 초과한 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["title", "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901"],
+            ["key", "case 5"]
+        )),
+
+        bs('product/ep')('case 6', 'stockCnt 없는 경우', ...PRODUCT.productepex("stockCnt")),
+        bs('product/ep')('case 7', 'stockCnt 타입 다른 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["stockCnt", "ㅎㅎ"],
+            ["key", "error"]
+        )),
+        bs('product/ep')('case 8', 'stockCnt 빈값인 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["stockCnt", ""],
+            ["key", "case 8"]
+        )),
+        bs('product/ep')('case 9-1', 'stockCnt 0 미만인 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["stockCnt", -1],
+            ["key", "case 9"]
+        )),
+        bs('product/ep')('case 9-2', 'stockCnt 9999999 초과한 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["stockCnt", 10000000],
+            ["key", "case 9"]
+        )),
+
+        bs('product/ep')('case 10', 'isTemp 없는 경우', ...PRODUCT.productepex("isTemp")),
+        bs('product/ep')('case 11', 'isTemp 타입 다른 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["isTemp", "ㅎㅎ"],
+            ["key", "error"]
+        )),
+
+        bs('product/ep')('case 12', 'limitCnt 없는 경우', ...PRODUCT.productepex("limitCnt")),
+        bs('product/ep')('case 13', 'limitCnt 타입 다른 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["limitCnt", "ㅎㅎ"],
+            ["key", "error"]
+        )),
+        bs('product/ep')('case 14', 'limitCnt 빈값인 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["limitCnt", ""],
+            ["key", "case 14"]
+        )),
+        bs('product/ep')('case 15-1', 'limitCnt 0 미만인 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["limitCnt", -1],
+            ["key", "case 15"]
+        )),
+        bs('product/ep')('case 15-2', 'limitCnt 9999999 초과한 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["limitCnt", 10000000],
+            ["key", "case 15"]
+        )),
+
+        bs('product/ep')('case 16', 'isActive 없는 경우', ...PRODUCT.productepex("isActive")),
+        bs('product/ep')('case 17', 'isActive 타입 다른 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["isActive", "ㅎㅎ"],
+            ["key", "error"]
+        )),
+
+        bs('product/ep')('case 18', 'vendorR 없는 경우', ...PRODUCT.productepex("vendorR")),
+        bs('product/ep')('case 19', 'vendorR 타입 다른 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["vendorR", "ㅎㅎ"],
+            ["key", "error"]
+        )),
+        bs('product/ep')('case 20', 'vendorR 빈값인 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["vendorR", ""],
+            ["key", "error"]
+        )),
+        bs('vendor/wp')('ready for case 21', '제조사 등록', ...VENDOR.vendorwp()),
+        //TODO: 제조사 삭제 api 작성 시 추가
+        bs('product/ep')('case 21', 'vendorR 유효하지 않은 값일 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["vendorR", _=>bs("ready for case 21_vendorR")],
+            ["key", "error"]
+        )),
+
+        bs('product/ep')('case 22', 'categoryR 없는 경우', ...PRODUCT.productepex("categoryR")),
+        bs('product/ep')('case 23', 'categoryR 타입 다른 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["categoryR", "ㅎㅎ"],
+            ["key", "error"]
+        )),
+        bs('product/ep')('case 24', 'categoryR 원소 타입 다른 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["categoryR", [""]],
+            ["key", "error"]
+        )),
+        //TODO: 카테고리 등록/삭제 api 작성 시 추가
+        bs('product/ep')('case 25', 'categoryR 유효하지 않은 값일 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["categoryR", _=>bs("ready for case 25_categoryR")],
+            ["key", "error"]
+        )),
+
+        bs('product/ep')('case 26', 'price 없는 경우', ...PRODUCT.productepex("price")),
+        bs('product/ep')('case 27', 'price 숫자로된 문자가 아닌 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["price", "ㅎㅎ"],
+            ["key", "error"]
+        )),
+        bs('product/ep')('case 28', 'price 빈값인 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["price", ""],
+            ["key", "case 28"]
+        )),
+        bs('product/ep')('case 29-1', 'price 0 미만인 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["price", -1],
+            ["key", "case 29"]
+        )),
+        bs('product/ep')('case 29-2', 'price 9999999 초과한 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["price", 10000000],
+            ["key", "case 29"]
+        )),
+
+        bs('product/ep')('case 30', 'originPrice 없는 경우', ...PRODUCT.productepex("originPrice")),
+        bs('product/ep')('case 31', 'originPrice 숫자로된 문자가 아닌 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["originPrice", "ㅎㅎ"],
+            ["key", "error"]
+        )),
+        bs('product/ep')('case 32-1', 'originPrice 0 미만인 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["originPrice", -1],
+            ["key", "case 32"]
+        )),
+        bs('product/ep')('case 32-2', 'originPrice 9999999 초과한 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["originPrice", 10000000],
+            ["key", "case 32"]
+        )),
+        bs('product/ep')('case 33', 'originPrice가 판매가 미만인 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["price", 200],
+            ["originPrice", 100],
+            ["key", "case 33"]
+        )),
+
+        bs('product/ep')('case 34', 'thumbnail 없는 경우', ...PRODUCT.productepex("thumbnail")),
+        bs('product/ep')('case 35', 'thumbnail 빈값인 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["thumbnail", ""],
+            ["key", "case 35"]
+        )),
+
+        bs('product/ep')('case 36', 'imageList 없는 경우', ...PRODUCT.productepex("imageList")),
+        bs('product/ep')('case 37', 'imageList 원소 없는 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["imageList", [""]],
+            ["key", "case 37"]
+        )),
+
+        bs('product/ep')('case 38', 'desc 없는 경우', ...PRODUCT.productepex("desc")),
+
+        bs('product/ep')('case 39', 'descImgList 없는 경우', ...PRODUCT.productepex("descImgList")),
+        bs('product/ep')('case 40', 'descImgList 타입 다른 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["descImgList", "ㅎㅎ"],
+            ["key", "error"]
+        )),
+
+        bs('product/ep')('case 41', 'ship 없는 경우', ...PRODUCT.productepex("ship")),
+        bs('product/ep')('case 42', 'ship 타입 다른 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["ship", "ㅎㅎ"],
+            ["key", "error"]
+        )),
+        bs('product/ep')('case 43', 'ship selected 없는 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["ship", {"info":""}],
+            ["key", "error"]
+        )),
+        bs('product/ep')('case 44', 'ship selected 타입 다른 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["ship", {"info":"", "selected":"ㅎ"}],
+            ["key", "error"]
+        )),
+        bs('product/ep')('case 45', 'ship selected 유효하지 않은 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["ship", {"info":"", "selected":2}],
+            ["key", "error"]
+        )),
+        bs('product/ep')('case 46', 'ship info 없는 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["ship", {"selected":0}],
+            ["key", "error"]
+        )),
+        bs('product/ep')('case 47', 'ship info 빈값인 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["ship", {"info":"", "selected":1}],
+            ["key", "case 47"]
+        )),
+
+        bs('product/ep')('case 48', 'volume 없는 경우', ...PRODUCT.productepex("volume")),
+        bs('product/ep')('case 49', 'volume 타입 다른 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["volume", "ㅎㅎ"],
+            ["key", "error"]
+        )),
+        bs('product/ep')('case 50', 'volume 빈값인 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["volume", ""],
+            ["key", "case 50"]
+        )),
+
+        bs('product/ep')('case 51', 'weight 없는 경우', ...PRODUCT.productepex("weight")),
+        bs('product/ep')('case 52', 'weight 타입 다른 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["weight", "ㅎㅎ"],
+            ["key", "error"]
+        )),
+        bs('product/ep')('case 53', 'weight 빈값인 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["weight", ""],
+            ["key", "case 53"]
+        )),
+
+        bs('product/ep')('case 54', 'horizontal 없는 경우', ...PRODUCT.productepex("horizontal")),
+        bs('product/ep')('case 55', 'horizontal 타입 다른 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["horizontal", "ㅎㅎ"],
+            ["key", "error"]
+        )),
+        bs('product/ep')('case 56', 'horizontal 빈값인 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["horizontal", ""],
+            ["key", "case 56"]
+        )),
+
+        bs('product/ep')('case 57', 'vertical 없는 경우', ...PRODUCT.productepex("vertical")),
+        bs('product/ep')('case 58', 'vertical 타입 다른 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["vertical", "ㅎㅎ"],
+            ["key", "error"]
+        )),
+        bs('product/ep')('case 59', 'vertical 빈값인 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["vertical", ""],
+            ["key", "case 59"]
+        )),
+
+        bs('product/ep')('case 60', 'depth 없는 경우', ...PRODUCT.productepex("depth")),
+        bs('product/ep')('case 61', 'depth 타입 다른 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["depth", "ㅎㅎ"],
+            ["key", "error"]
+        )),
+        bs('product/ep')('case 62', 'depth 빈값인 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["depth", ""],
+            ["key", "case 62"]
+        )),
+
+        bs('product/ep')('case 63', 'temperature 없는 경우', ...PRODUCT.productepex("temperature")),
+        bs('product/ep')('case 64', 'temperature 타입 다른 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["temperature", "ㅎㅎ"],
+            ["key", "error"]
+        )),
+        bs('product/ep')('case 65', 'temperature 빈값인 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["temperature", ""],
+            ["key", "case 65"]
+        )),
+
+        bs('product/ep')('case 66', 'r 없는 경우', ...PRODUCT.productepex("r")),
+        bs('product/ep')('case 67', 'r 타입 다른 경우', ...PRODUCT.productepchange(
+            ["vendorR", _=>bs("ready for test_vendorR")],
+            ["r", "ㅎㅎ"],
+            ["key", "error"]
+        )),
+        bs('product/wp')('ready for case 68', '품목 등록', ...PRODUCT.productwpchange(
+            ["vendorR", _=>bs("ready for test_vendorR")]
+        )),
+        //TODO:품목 삭제 api 작성 후 추가
+        bs('product/ep')('case 68', 'r 유효하지 않은 경우', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for case 68_productR")],
+            ["key", "error"]
+        )),
+
+        bs('product/ep')('clear case', '품목 수정 성공', ...PRODUCT.productepchange(
+            ["r", _=>bs("ready for test_productR")],
+            ["vendorR", _=>bs("ready for test_vendorR")]
+        )),
+        bs('product/e')('check for clear case', '품목 수정 확인', ...PRODUCT.productechange(
+            ["r", _=>bs("ready for test_productR")]
+        )),
+    );
+
+    TEST.start('품목 수정');
+
+</script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>bluebasketAdmin 품목 수정 준비 Test Code</title>
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1"/>
+    <style>
+        body{margin:0;padding:0}
+        #doc{margin:10px}
+    </style>
+</head>
+<body>
+<script src="../core/bs.js"></script>
+<script src="../core/test.js"></script>
+<script src="../core/test-extend.js"></script>
+<script src="../common/api.js"></script>
+<script src="../vendor/vendorJSON.js"></script>
+<script src="../product/productJSON.js"></script>
+<script>
+
+
+
+    TEST.add(
+        bs('product')('case 3', 'pid 없음', ...PRODUCT.productex("pid")),
+        bs('product')('case 4', 'pid 타입 Str 아님', ...PRODUCT.productchange(
+            ["pid", 123],
+            ["key", "case 4"]
+        )),
+        bs('product')('case 5', 'pid 값 21자 이상', ...PRODUCT.productchange(
+            ["pid", "123451234512345123451234512"],
+            ["key", "case 5"]
+        )),
+        bs('product')('case 6', 'title 없음', ...PRODUCT.productex("title")),
+        bs('product')('case 7', 'title 타입 Str 아님', ...PRODUCT.productchange(
+            ["title", 123],
+            ["key", "case 7"]
+        )),
+        bs('product')('case 8', 'title 타입 값 201자 이상', ...PRODUCT.productchange(
+            ["title 타입", "123451234512345123451234512123451234512345123451234512123451234512345123451234512123451234512345123451234512123451234512345123451234512123451234512345123451234512123451234512345123451234512123451234512345123451234512123451234512345123451234512123451234512345123451234512"],
+            ["key", "case 8"]
+        )),
+        bs('product')('case 9', 'catType 없음', ...PRODUCT.productex("catType")),
+        bs('product')('case 10', 'catType Str 아님', ...PRODUCT.productchange(
+            ["catType", 123],
+            ["key", "case 10"]
+        )),
+        bs('product')('case 11', 'catType 0(전체) 또는 1(선택) 이외의 수', ...PRODUCT.productchange(
+            ["catType", "!23"],
+            ["key", "case 11"]
+        )),
+        bs('product')('case 12', 'catList 없음', ...PRODUCT.productex("catList")),
+        bs('product')('case 13', 'catList 타입 배열 아님', ...PRODUCT.productchange(
+            ["catList", 123],
+            ["key", "case 13"]
+        )),
+        bs('product')('case 14', 'catType이 0인데, catList 빈배열 아님', ...PRODUCT.productchange(
+            ["catType", 0],
+            ["catList", [{"r":1, "list":[0]}]],
+            ["key", "case 14"]
+        )),
+        bs('product')('case 15', 'catType이 1인데, catList 빈배열', ...PRODUCT.productchange(
+            ["catType", 1],
+            ["catList", []],
+            ["key", "case 15"]
+        )),
+        bs('product')('case 16', 'catList의 원소가 Obj 아님', ...PRODUCT.productchange(
+            ["catType", 1],
+            ["catList", [1]],
+            ["key", "case 16"]
+        )),
+        bs('product')('case 17', 'catType이 1인데, catList.obj.r 없음', ...PRODUCT.productchange(
+            ["catType", 1],
+            ["catList", [{"list":[0]}]],
+            ["key", "case 17"]
+        )),
+        bs('product')('case 18', 'catType이 1인데, catList.obj.r 이 Long 아님', ...PRODUCT.productchange(
+            ["catType", 1],
+            ["catList", [{"r":"asdf", "list":[0]}]],
+            ["key", "case 8"]
+        )),
+        bs('product')('case 19', 'catType이 1인데, catList.obj.list 없음', ...PRODUCT.productchange(
+            ["catType", 1],
+            ["catList", [{"r":"asdf"}]],
+            ["key", "case 19"]
+        )),
+        bs('product')('case 20', 'catType이 1인데, catList.obj.list 가 배열아님', ...PRODUCT.productchange(
+            ["catType", 1],
+            ["catList", [{"r":"asdf", "list":"Asdf"}]],
+            ["key", "case 20"]
+        )),
+        bs('product')('case 21', 'catType이 1인데, catList.obj.list 가 빈배열', ...PRODUCT.productchange(
+            ["catType", 1],
+            ["catList", [{"r":"asdf", "list":[]}]],
+            ["key", "case 21"]
+        )),
+        bs('product')('case 22', 'catType이 1인데, catList.obj.list의 원소가 Long 아님', ...PRODUCT.productchange(
+            ["catType", 1],
+            ["catList", [{"r":"asdf", "list":["asd"]}]],
+            ["key", "case 22"]
+        )),
+        bs('product')('case 23', 'catType이 1인데, catList.obj.list의 원소가 0과 다른수가 들어갔을 떄', ...PRODUCT.productchange(
+            ["catType", 1],
+            ["catList", [{"r":"asdf", "list":[0,123]}]],
+            ["key", "case 23"]
+        )),
+        bs('product')('case 24', 'sort 없음', ...PRODUCT.productex("sort")),
+        bs('product')('case 25', 'sort 타입 Str 아님', ...PRODUCT.productchange(
+            ["sort", 123],
+            ["key", "case 25"]
+        )),
+        bs('product')('case 26', 'vendor 없음', ...PRODUCT.productex("vendor")),
+        bs('product')('case 27', 'vendor 타입 Long 아님', ...PRODUCT.productchange(
+            ["sort", "ASd"],
+            ["key", "case 27"]
+        )),
+        bs('product')('case 28', 'isoutofstock 없음', ...PRODUCT.productex("isoutofstock")),
+        bs('product')('case 29', 'isoutofstock 타입 Str 아님', ...PRODUCT.productchange(
+            ["isoutofstock", 13214],
+            ["key", "case 29"]
+        )),
+        bs('product')('case 30', 'isoutofstock 0(전체) 또는 1(o),2(t)아님', ...PRODUCT.productchange(
+            ["isoutofstock", "asd"],
+            ["key", "case 30"]
+        )),
+        bs('product')('case 31', 'inactive 없음', ...PRODUCT.productex("inactive")),
+        bs('product')('case 32', 'inactive 타입 bool 아님', ...PRODUCT.productchange(
+            ["inactive", 13214],
+            ["key", "case 32"]
+        )),
+        bs('product')('case 33', 'p 없음', ...PRODUCT.productex("p")),
+        bs('product')('case 34', 'p 타입 Long 아님', ...PRODUCT.productchange(
+            ["p", "Asdasdad"],
+            ["key", "case 34"]
+        )),
+        bs('product')('case 35', 'p 값 유효 x', ...PRODUCT.productchange(
+            ["p", -123],
+            ["key", "case 35"]
+        )),
+
+        bs('product')('noproducts', '품목이 없을 때(품목이 하나도 없는 맨 처음에만 테스트 성공함.)', ...PRODUCT.productchange(
+            ["title", "===!!$$##@@!!@@#"],
+            ["key", "noproducts"]
+        )),
+        bs('product')('search/pid', '검색 조건 pid가 입력한대로 왔는지', ...PRODUCT.productchange(
+            ["pid", "생성된 pid값"],
+            ["key", "search/pid"]
+        )),
+        bs('product')('search/title', '검색 조건 품목명이 입력한대로 왔는지', ...PRODUCT.productchange(
+            ["title", "생성된 품목명 값"],
+            ["key", "search/title"]
+        )),
+        // 1차 카테고리 2개 생성
+        // 2차 카테고리 2개 생성
+        // 생성된 cat을 이용하여 테스트 코드 작성.
+        bs('product')('search/category', '검색 조건 1차카테고리 선택한게 선택한대로 왔는지', ...PRODUCT.productchange(
+            ["catList", [{"r":2, "list":[3]}]],
+            ["key", "search/category"]
+        )),
+        // 상품 1,2 등록 한개는 inactive: true 하는 false
+        // bs('product')('search/inactive', 'inactive 상품'),
+        // bs('product')('thumbnail', '썸네일'),
+        // bs('product')('pid', 'PID'),
+        // bs('product')('title', '품목명'),
+        // bs('product')('vendor', '제조사'),
+        // bs('product')('catogory', '카테고리'),
+        // bs('product')('stock', '재고'),
+        // bs('product')('outofstock/none', '품절 여부/ 품절 아님'),
+        // bs('product')('outofstock/t', '품절 여부/ temp 품절'),
+        // bs('product')('outofstock/o', '품절 여부/ out of stock 품절'),
+        // bs('product')('outofstock/to', '품절 여부/ temp, out of stock 품절'),
+
+    );
+    TEST.start('품목 리스트');
+
+</script>
+</body>
+</html>
