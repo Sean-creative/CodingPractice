@@ -10,6 +10,7 @@
     const _stringify = (target, stack) => {
         const {arr,idx,acc} = target.pop();
 
+
         if (idx === arr.length) {
             if (stack.length > 0) {
                 const [arr, idx] = stack.pop();
