@@ -7,8 +7,9 @@
 <body>
 <script>
 
-    const _stringify = function (arr, idx, acc, subAcc, stack) {
-        acc += subAcc;
+    const _stringify = (target, stack) => {
+        const {arr,idx,acc} = target.pop();
+
         if (idx === arr.length) {
             if (stack.length > 0) {
                 const [arr, idx] = stack.pop();
@@ -44,7 +45,7 @@
     }
 
     const stringify = function (arr) {
-        return _stringify(arr, 0, "[", "", []);
+        return _stringify([{arr, idx:0, acc:'['}], []);
     }
 
     // const arr = [1, "안녕", [2, "하이"], true, {a:0}, null, NaN, undefined];

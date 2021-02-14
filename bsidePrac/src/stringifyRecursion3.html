@@ -9,12 +9,12 @@
 
     const stringify = arr => {
 
-        const fStack = [{arr, idx:0, acc:'['}];
-        const subStack = [];
+        const target = [{arr, idx:0, acc:'['}];
+        const stack = [];
 
         //무조건 한번은 해체를 하니까 -> do-while을 쓰는게 맞다.
         do {
-            let {arr, idx, acc} = fStack.pop();
+            let {arr, idx, acc} = target.pop();
             if (idx === arr.length) {
                 if (subStack.length > 0) {
                     acc = acc.slice(0, -1) + '],';
