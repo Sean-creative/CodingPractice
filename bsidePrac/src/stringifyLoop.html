@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>stringifyLoop</title>
+    <title>stringifyLoop 210202</title>
 </head>
 <body>
 <script>
@@ -18,11 +18,11 @@
     // const arr = [1, 2, true, '안녕'];
     // const arr = [1,2,3,["",2,""]];
     const arr = [1, "안녕", [2, "하이"], true];
-
     const fStack = [{arr, idx: 0}];
     const subStack = [];
     let acc = "[";
 
+    //(W)위의 변수들을 함수 안으로 옮길 것! - 데이터가 외부 환경에 안전하도록
     const sum = (fStack) => {
         while (fStack.length > 0) {
 
@@ -63,6 +63,7 @@
     }
 
     sum(fStack);
+    //(W) sum(arr)로 바꿀 것!
 
 
 </script>

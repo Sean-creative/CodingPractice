@@ -2,10 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>stringifyLoop3</title>
+    <title>stringifyLoop3 210209</title>
 </head>
 <body>
 <script>
+    // - 객체해체는 선언이후 할당하려면 괄호를 써주어야 한다
+    // - while문 안에 while문 (2차루프- 인덱스루프로 해결)
+    // - 제어센터도 한군데로 모으기
+    // - 예외케이스가 위에 있는게 좋다.
+    // - 결합과정은 한군데에 있으면 좋다.
 
     const stringify = arr => {
         let target = {arr, idx:0, acc:'['};
@@ -59,9 +64,11 @@
             }
         }
         while (target = stack.pop());
+        //1.stack.pop()이 먼저 되서 2.오른쪽에서 왼쪽으로 값이 들어가고 3.값이 반환값으로 나온다.
         return result.slice(0, -1) + ']';
     }
 
+    //빈배열도 테스트 해보기
     // const arr = [1, "안녕", [2, "하이"], true, {a:0}, null, NaN, undefined];
     const arr = [1, "안녕", [[],[[]]], [2, "하이"], true];
     // const arr = [1, [], 4];
