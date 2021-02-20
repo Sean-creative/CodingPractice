@@ -7,6 +7,7 @@
 <body>
 <script>
 
+    //(W)파라미터에 있는 target 자체를 분해해서 진행하는게 좋다. (코드를 읽지않아도 규칙을 알 수 있음)
     const _stringify = (target, stack) => {
         const {arr,idx,acc} = target;
 
@@ -20,6 +21,7 @@
         }
 
         const type = typeof arr[idx];
+        //(W) type도 위와 마찬가지
         switch (type) {
             case "number":
             case "boolean": {

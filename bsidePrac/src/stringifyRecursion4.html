@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>stringifyRecursion4 210215</title>
+</head>
+<body>
+<script>
+
+    const combine = v => `[${v.substr(1)}]`;
+
+    const _stringify = ({arr,idx,acc}, stack) => {
+
+        //next함수는 매번 새롭게 만들어질텐데, 매번 인자가 새롭게 정의됨
+        //함수는 만들어지는 시점에 외부환경을 기억하므로(클로저?), acc만 인자로 받아도 나머지는 기억되어 있을 것이다.
+        const next = (subAcc) => {return _stringify({arr,idx:idx+1,acc:`${acc},${subAcc}`}, stack);}
+        if (idx === arr.length) {
+            if (stack.length > 0) {
+                const {arr, idx, acc:mainAcc} = stack.pop();
+                return _stringify({arr, idx, acc:`${mainAcc},${combine(acc)}`}, stack);
+            } else {
+                return combine(acc);
+            }
+        }
+
+        switch (typeof arr[idx]) {
+            case "number": {
+                if(isNaN(arr[idx]))
+                    throw "error - invalid value";
+                return next(arr[idx]);
+            }
+            case "boolean": {
+                return next(arr[idx]);
+            }
+            case "string": {
+                return next(`"${arr[idx]}"`);
+            }
+            case "object": {
+                if (arr[idx] instanceof Array) {
+                    stack.push({arr, idx:idx+1, acc});
+                    //빈 배열일때는 따로 체크를 해준다.
+                    return _stringify({arr:arr[idx], idx:0, acc:(arr[idx].length===0?",":"")}, stack);
+                }
+                else {
+                    throw "error - invalid value";
+                }
+            }
+            default : {
+                throw "error - invalid value";
+            }
+        }
+    }
+
+    const stringify = function (arr) {
+        try{
+            return _stringify({arr, idx:0, acc:''}, []);
+        } catch (e){
+            alert(e);
+        }
+    }
+
+
+    const arr = [1, "안녕", [2, "하이"], true, {a:0}, null, NaN, undefined];
+    // const arr = [1, "안녕", [2,[3,4],[], "하이"], true];
+    // const arr = [1, [], 4];
+    console.log('stringify(arr) = ' + stringify(arr));
+    console.log('JSON.stringify(arr) = ' + JSON.stringify(arr));
+    console.log('stringify(arr) === JSON.stringify(arr) ==> ' + (stringify(arr) === JSON.stringify(arr)));
+
+
+
+</script>
+</body>
+</html>

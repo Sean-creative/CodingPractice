@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>stringifyLoop4 210215</title>
+</head>
+<body>
+<script>
+    // - 객체해체는 선언이후 할당하려면 괄호를 써주어야 한다
+    // - while문 안에 while문 (2차루프- 인덱스루프로 해결)
+    // - 제어센터도 한군데로 모으기
+    // - 예외케이스가 위에 있는게 좋다.
+    // - 결합과정은 한군데에 있으면 좋다.
+
+    const stringify = ARR => {
+        let target = {arr, idx:0, acc:'['};
+        const stack = [];
+
+        // console.log(acc);
+        do {
+            let {arr, idx, acc} = target;
+
+            if (idx === arr.length) {
+                if (stack.length > 0) {
+                    acc = acc.slice(0, -1) + '],';
+                    let {arr, idx, acc:mainAcc} = stack.pop();
+                    stack.push({arr,idx,acc:mainAcc+acc});
+                }
+                else {
+                    return acc;
+                }
+            }
+            else {
+                const type = typeof arr[idx];
+                switch (type) {
+                    case "number":
+                    case "boolean": {
+                        if (isNaN(arr[idx]))
+                            return "error - invalid value";
+                        stack.push({arr, idx:idx+1, acc:acc+`${arr[idx]},`});
+                        break;
+                    }
+                    case "string": {
+                        stack.push({arr, idx:idx+1, acc:acc+`"${arr[idx]}",`});
+                        break;
+                    }
+                    case "object": {
+                        //배열이 아닌 객체는 default로 처리됨
+                        if (arr[idx] instanceof Array) {
+                            stack.push({arr, idx:idx+1, acc}); //끝내고 돌아갈 곳
+                            //빈 배열일때는 따로 체크를 해준다.
+                            stack.push({arr: arr[idx], idx: 0, acc:(arr[idx].length===0?"[,":"[")});
+                            break;
+                        }
+                        else {
+                            return "error - invalid value";
+                        }
+                    }
+                    default : {
+                        return "error - invalid value";
+                    }
+                }
+            }
+
+            if(stack.length > 0){
+                ({arr,idx,acc} = stack.pop())
+            }
+            else {
+                return acc;
+            }
+        }//do-end
+
+
+
+        // while (target = stack.pop());
+        while (true);
+        //while 문안에서 지역변수를 던지는게 가능한건가?
+        console.log(acc+"aaa");
+
+        //1.stack.pop()이 먼저 되서 2.오른쪽에서 왼쪽으로 값이 들어가고 3.값이 반환값으로 나온다.
+        return acc.slice(0, -1) + ']';
+    }
+
+    // const arr = [1, "안녕", [2, "하이"], true, {a:0}, null, NaN, undefined];
+    const arr = [1, "안녕", [[],[[]]], [2, "하이"], true];
+    // const arr = [1, [], 4];
+    // const arr = [1, 2, 3, 4];
+    // const arr = [1, [2, 3], 4];
+    const result = stringify(arr);
+    console.log('stringify(arr) = ' + result);
+    console.log('JSON.stringify(arr) = ' + JSON.stringify(arr));
+    console.log('stringify(arr) === JSON.stringify(arr) ==> ' + (result === JSON.stringify(arr)));
+
+
+</script>
+</body>
+</html>
