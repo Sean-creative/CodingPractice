@@ -12,33 +12,23 @@
     // - 예외케이스가 위에 있는게 좋다.
     // - 결합과정은 한군데에 있으면 좋다.
 
+
     const stringify = ARR => {
+        const combine = v => `[${v.substr(1)}]`;
         let arr = ARR;
         let idx = 0;
         let acc='';
         const stack = [];
 
-
         do {
-            // let {arr, idx, acc} = target;
-
-            if (idx === arr.length) {
-                if (stack.length > 0) {
-                    acc = acc.slice(0, -1) + '],';
-                    let {arr, idx, acc:mainAcc} = stack.pop();
-                    stack.push({arr,idx,acc:mainAcc+acc});
-                }
-                else {
-                    return acc;
-                }
-            }
-            else {
-                const type = typeof arr[idx];
-                switch (type) {
-                    case "number":
+                switch (typeof arr[idx]) {
+                    case "number": {
+                        if(isNaN(arr[idx]))
+                            throw "error - invalid value";
+                        stack.push({arr, idx:idx+1, acc:acc+`${arr[idx]},`});
+                        break;
+                    }
                     case "boolean": {
-                        if (isNaN(arr[idx]))
-                            return "error - invalid value";
                         stack.push({arr, idx:idx+1, acc:acc+`${arr[idx]},`});
                         break;
                     }
@@ -47,7 +37,6 @@
                         break;
                     }
                     case "object": {
-                        //배열이 아닌 객체는 default로 처리됨
                         if (arr[idx] instanceof Array) {
                             stack.push({arr, idx:idx+1, acc}); //끝내고 돌아갈 곳
                             //빈 배열일때는 따로 체크를 해준다.
@@ -62,32 +51,35 @@
                         return "error - invalid value";
                     }
                 }
-            }
+                console.log(acc);
 
-            if(stack.length > 0){
-                ({arr,idx,acc} = stack.pop())
+            if (idx === arr.length) {
+                if (stack.length > 0) {
+                    acc = acc.slice(0, -1) + '],';
+                    let {arr, idx, acc:mainAcc} = stack.pop();
+                    stack.push({arr,idx,acc:mainAcc+acc});
+                }
+                else {
+                    break;
+                }
             }
             else {
-                return acc;
+                {arr, idx, acc} = stack.pop();
             }
         }//do-end
         while (true);
-        //while 문안에서 지역변수를 던지는게 가능한건가?
-        console.log(acc+"aaa");
 
-        //1.stack.pop()이 먼저 되서 2.오른쪽에서 왼쪽으로 값이 들어가고 3.값이 반환값으로 나온다.
-        return acc.slice(0, -1) + ']';
+        return combine(acc);
     }
 
     // const ARR = [1, "안녕", [2, "하이"], true, {a:0}, null, NaN, undefined];
-    const ARR = [1, "안녕", [[],[[]]], [2, "하이"], true];
+    // const ARR = [1, "안녕", [[],[[]]], [2, "하이"], true];
     // const ARR = [1, [], 4];
-    // const ARR = [1, 2, 3, 4];
     // const ARR = [1, [2, 3], 4];
-    const result = stringify(ARR);
-    console.log('stringify(arr) = ' + result);
+    const ARR = [1, 2, 3, 4];
+    console.log('stringify(arr) = ' + stringify(ARR));
     console.log('JSON.stringify(arr) = ' + JSON.stringify(ARR));
-    console.log('stringify(arr) === JSON.stringify(arr) ==> ' + (result === JSON.stringify(ARR)));
+    console.log('stringify(arr) === JSON.stringify(arr) ==> ' + (stringify(ARR)=== JSON.stringify(ARR)));
 
 
 </script>
