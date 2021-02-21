@@ -13,12 +13,14 @@
     // - 결합과정은 한군데에 있으면 좋다.
 
     const stringify = ARR => {
-        let target = {arr, idx:0, acc:'['};
+        let arr = ARR;
+        let idx = 0;
+        let acc='';
         const stack = [];
 
-        // console.log(acc);
+
         do {
-            let {arr, idx, acc} = target;
+            // let {arr, idx, acc} = target;
 
             if (idx === arr.length) {
                 if (stack.length > 0) {
@@ -69,10 +71,6 @@
                 return acc;
             }
         }//do-end
-
-
-
-        // while (target = stack.pop());
         while (true);
         //while 문안에서 지역변수를 던지는게 가능한건가?
         console.log(acc+"aaa");
@@ -81,15 +79,15 @@
         return acc.slice(0, -1) + ']';
     }
 
-    // const arr = [1, "안녕", [2, "하이"], true, {a:0}, null, NaN, undefined];
-    const arr = [1, "안녕", [[],[[]]], [2, "하이"], true];
-    // const arr = [1, [], 4];
-    // const arr = [1, 2, 3, 4];
-    // const arr = [1, [2, 3], 4];
-    const result = stringify(arr);
+    // const ARR = [1, "안녕", [2, "하이"], true, {a:0}, null, NaN, undefined];
+    const ARR = [1, "안녕", [[],[[]]], [2, "하이"], true];
+    // const ARR = [1, [], 4];
+    // const ARR = [1, 2, 3, 4];
+    // const ARR = [1, [2, 3], 4];
+    const result = stringify(ARR);
     console.log('stringify(arr) = ' + result);
-    console.log('JSON.stringify(arr) = ' + JSON.stringify(arr));
-    console.log('stringify(arr) === JSON.stringify(arr) ==> ' + (result === JSON.stringify(arr)));
+    console.log('JSON.stringify(arr) = ' + JSON.stringify(ARR));
+    console.log('stringify(arr) === JSON.stringify(arr) ==> ' + (result === JSON.stringify(ARR)));
 
 
 </script>
