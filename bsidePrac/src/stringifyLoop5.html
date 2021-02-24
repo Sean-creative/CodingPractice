@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>stringifyLoop4 210215</title>
+</head>
+<body>
+<script>
+    // - 객체해체는 선언이후 할당하려면 괄호를 써주어야 한다
+    // - while문 안에 while문 (2차루프- 인덱스루프로 해결)
+    // - 제어센터도 한군데로 모으기
+    // - 예외케이스가 위에 있는게 좋다.
+    // - 결합과정은 한군데에 있으면 좋다.
+
+    // 위에 있던 내용들 아래로 내림
+
+    // do {
+    //     while(idx > length)
+    //     arr[i] array
+    //     break
+    // } while(stack);
+
+    const stringify = ARR => {
+        const combine = v => `[${v.substr(1)}]`;
+        let arr = ARR;
+        let idx = 0;
+        let acc='';
+        const stack = [];
+
+        do {
+            if (idx !== arr.length) {
+                switch (typeof arr[idx]) {
+                    case "number": {
+                        if (isNaN(arr[idx]))
+                            throw "error - invalid value";
+                        stack.push({arr, idx: idx + 1, acc: acc + `,${arr[idx]}`});
+                        break;
+                    }
+                    case "boolean": {
+                        stack.push({arr, idx: idx + 1, acc: acc + `,${arr[idx]}`});
+                        break;
+                    }
+                    case "string": {
+                        stack.push({arr, idx: idx + 1, acc: acc + `,"${arr[idx]}"`});
+                        break;
+                    }
+                    case "object": {
+                        if (arr[idx] instanceof Array) {
+                            stack.push({arr, idx: idx + 1, acc}); //끝내고 돌아갈 곳
+                            //빈 배열일때는 따로 체크를 해준다.
+                            stack.push({arr: arr[idx], idx: 0, acc: (arr[idx].length === 0 ? "," : "")});
+                            break;
+                        } else {
+                            throw "error - invalid value";
+                        }
+                    }
+                    default : {
+                        throw "error - invalid value";
+                    }
+                }
+            }
+            else {
+                    if (stack.length > 0) {
+                        let {arr, idx, acc: mainAcc} = stack.pop();
+                        stack.push({arr, idx, acc:`${mainAcc},${combine(acc)}`});
+                    }
+                    else {
+                        break;
+                    }
+            }
+            ({arr, idx, acc} = stack.pop());
+        }//do-end
+        while (true);
+
+        return combine(acc);
+    }
+
+    // const ARR = [1, "안녕", [2, "하이"], true, {a:0}, null, NaN, undefined];
+    const ARR = [1, "안녕", [[],[[]]], [2, "하이"], true];
+    // const ARR = [1, [], 4];
+    // const ARR = [1, [2, 3], 4];
+    // const ARR = [1, 2];
+    console.log('stringify(arr) = ' + stringify(ARR));
+    console.log('JSON.stringify(arr) = ' + JSON.stringify(ARR));
+    console.log('stringify(arr) === JSON.stringify(arr) ==> ' + (stringify(ARR)=== JSON.stringify(ARR)));
+
+</script>
+</body>
+</html>
