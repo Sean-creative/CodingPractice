@@ -12,6 +12,7 @@
     // - 예외케이스가 위에 있는게 좋다.
     // - 결합과정은 한군데에 있으면 좋다.
 
+    // 위에 있던 내용들 아래로 내림
 
     const stringify = ARR => {
         const combine = v => `[${v.substr(1)}]`;
@@ -21,55 +22,47 @@
         const stack = [];
 
         do {
+            if (idx !== arr.length) {
                 switch (typeof arr[idx]) {
                     case "number": {
-                        if(isNaN(arr[idx]))
+                        if (isNaN(arr[idx]))
                             throw "error - invalid value";
-                        stack.push({arr, idx:idx+1, acc:acc+`,${arr[idx]}`});
+                        stack.push({arr, idx: idx + 1, acc: acc + `,${arr[idx]}`});
                         break;
                     }
                     case "boolean": {
-                        stack.push({arr, idx:idx+1, acc:acc+`,${arr[idx]}`});
+                        stack.push({arr, idx: idx + 1, acc: acc + `,${arr[idx]}`});
                         break;
                     }
                     case "string": {
-                        stack.push({arr, idx:idx+1, acc:acc+`,"${arr[idx]}"`});
+                        stack.push({arr, idx: idx + 1, acc: acc + `,"${arr[idx]}"`});
                         break;
                     }
                     case "object": {
                         if (arr[idx] instanceof Array) {
-                            stack.push({arr, idx:idx+1, acc}); //끝내고 돌아갈 곳
+                            stack.push({arr, idx: idx + 1, acc}); //끝내고 돌아갈 곳
                             //빈 배열일때는 따로 체크를 해준다.
-                            stack.push({arr: arr[idx], idx: 0, acc:(arr[idx].length===0?",":"")});
+                            stack.push({arr: arr[idx], idx: 0, acc: (arr[idx].length === 0 ? "," : "")});
                             break;
-                        }
-                        else {
-                            return "error - invalid value";
+                        } else {
+                            throw "error - invalid value";
                         }
                     }
                     default : {
-                        return "error - invalid value";
+                        throw "error - invalid value";
                     }
-                }
-                console.log(acc);
-
-            if (idx === arr.length-1) {
-                if (stack.length > 0) {
-                    acc = acc.slice(0, -1) + '],';
-                    let {arr, idx, acc:mainAcc} = stack.pop();
-                    stack.push({arr,idx,acc:mainAcc+acc});
-                }
-                else {
-                    break;
                 }
             }
             else {
-                //이상하네...~
-                let target = stack.pop();
-                arr = target.arr;
-                acc = target.acc;
-                idx = target.idx;
+                    if (stack.length > 0) {
+                        let {arr, idx, acc: mainAcc} = stack.pop();
+                        stack.push({arr, idx, acc:`${mainAcc},${combine(acc)}`});
+                    }
+                    else {
+                        break;
+                    }
             }
+            ({arr, idx, acc} = stack.pop());
         }//do-end
         while (true);
 
@@ -77,14 +70,13 @@
     }
 
     // const ARR = [1, "안녕", [2, "하이"], true, {a:0}, null, NaN, undefined];
-    // const ARR = [1, "안녕", [[],[[]]], [2, "하이"], true];
+    const ARR = [1, "안녕", [[],[[]]], [2, "하이"], true];
     // const ARR = [1, [], 4];
     // const ARR = [1, [2, 3], 4];
-    const ARR = [1, 2];
+    // const ARR = [1, 2];
     console.log('stringify(arr) = ' + stringify(ARR));
     console.log('JSON.stringify(arr) = ' + JSON.stringify(ARR));
     console.log('stringify(arr) === JSON.stringify(arr) ==> ' + (stringify(ARR)=== JSON.stringify(ARR)));
-
 
 </script>
 </body>
