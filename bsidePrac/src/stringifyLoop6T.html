@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>stringifyLoop4 210215</title>
+</head>
+<body>
+<script>
+
+
+    const stringify = arrX => {
+        const combine = v => `[${v.substr(1)}]`;
+        let arr = arrX, i=0, acc="";
+        const stack = [];
+
+        do {
+            for(; i<arr.length; i++) {
+                const curr = arr[i];
+                if(curr instanceof Array){
+                    stack.push({arr, i:i+1, acc});
+                    i=-1; acc=""; arr=curr;
+                }
+                else{
+                    // const key = typeof curr;
+                    switch (typeof curr) {
+                        case "number": {
+                            if (isNaN(curr))
+                                throw "error - invalid value";
+                            acc= acc + `,${curr}`;
+                            break;
+                        }
+                        case "boolean": {
+                            acc = acc + `,${curr}`;
+                            break;
+                        }
+                        case "string": {
+                            acc = acc + `,"${curr}"`;
+                            break;
+                        }
+                        // case "object": {
+                        //     if (curr instanceof Array) {
+                        //         stack.push({arr, i: i + 1, acc}); //끝내고 돌아갈 곳
+                        //         //빈 배열일때는 따로 체크를 해준다.
+                        //         stack.push({arr: curr, i: 0, acc: (curr.length === 0 ? "," : "")});
+                        //         break;
+                        //     } else {
+                        //         throw "error - invalid value";
+                        //     }
+                        // }
+                        default : {
+                            throw "error - invalid value";
+                        }
+                    }
+                }//end else
+            }//end for
+
+            if(stack.length===0) break;
+            ({arr,i,acc:mainAcc} = stack.pop());
+            acc=`${mainAcc},${combine(acc)}`;
+
+
+
+
+            // else {
+            //         if (stack.length > 0) {
+            //             let {arr, i, acc: mainAcc} = stack.pop();
+            //             stack.push({arr, i, acc:`${mainAcc},${combine(acc)}`});
+            //         }
+            //         else {
+            //             break;
+            //         }
+            // }
+            // ({arr, i, acc} = stack.pop());
+        }//do-end
+        while (true);
+
+        return combine(acc);
+    }
+
+    // const ARR = [1, "안녕", [2, "하이"], true, {a:0}, null, NaN, undefined];
+    const ARR = [1, "안녕", [[],[[]]], [2, "하이"], true];
+    // const ARR = [1, [], 4];
+    // const ARR = [1, [2, 3], 4];
+    // const ARR = [1, 2];
+    console.log('stringify(arr) = ' + stringify(ARR));
+    console.log('JSON.stringify(arr) = ' + JSON.stringify(ARR));
+    console.log('stringify(arr) === JSON.stringify(arr) ==> ' + (stringify(ARR)=== JSON.stringify(ARR)));
+
+</script>
+</body>
+</html>
