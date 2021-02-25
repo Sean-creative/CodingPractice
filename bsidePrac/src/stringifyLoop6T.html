@@ -6,8 +6,6 @@
 </head>
 <body>
 <script>
-
-
     const stringify = arrX => {
         const combine = v => `[${v.substr(1)}]`;
         let arr = arrX, i=0, acc="";
@@ -21,7 +19,6 @@
                     i=-1; acc=""; arr=curr;
                 }
                 else{
-                    // const key = typeof curr;
                     switch (typeof curr) {
                         case "number": {
                             if (isNaN(curr))
@@ -37,16 +34,6 @@
                             acc = acc + `,"${curr}"`;
                             break;
                         }
-                        // case "object": {
-                        //     if (curr instanceof Array) {
-                        //         stack.push({arr, i: i + 1, acc}); //끝내고 돌아갈 곳
-                        //         //빈 배열일때는 따로 체크를 해준다.
-                        //         stack.push({arr: curr, i: 0, acc: (curr.length === 0 ? "," : "")});
-                        //         break;
-                        //     } else {
-                        //         throw "error - invalid value";
-                        //     }
-                        // }
                         default : {
                             throw "error - invalid value";
                         }
@@ -57,20 +44,6 @@
             if(stack.length===0) break;
             ({arr,i,acc:mainAcc} = stack.pop());
             acc=`${mainAcc},${combine(acc)}`;
-
-
-
-
-            // else {
-            //         if (stack.length > 0) {
-            //             let {arr, i, acc: mainAcc} = stack.pop();
-            //             stack.push({arr, i, acc:`${mainAcc},${combine(acc)}`});
-            //         }
-            //         else {
-            //             break;
-            //         }
-            // }
-            // ({arr, i, acc} = stack.pop());
         }//do-end
         while (true);
 
