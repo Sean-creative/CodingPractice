@@ -2,57 +2,76 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>stringifyLoop5 210220</title>
+    <title>stringifyLoop6 210224</title>
 </head>
 <body>
 <script>
-    //do-while문안에 for루프 사용하여, 배열일때만 스택이 생기게 하기
-    const stringify = arrX => {
-        const combine = v => `[${v.substr(1)}]`;
-        let arr = arrX, i=0, acc="";
-        const stack = [];
 
+    //한 세트라고 인식하게 해서, 둘 다 바꿔야 한다는것을 인식하게 할 수 있게 해준다.
+    const accFunc = {
+        combine: (v1,v2) => {return `${v1},${v2}`},
+        finalize: v => {return`[${v.substr(1)}]`}
+    }
+
+    //결합도 Down, 응집도 Up -> 분기는 많아질 수 있지만, 변화율이 떨어지니까 함수로 묶어준다.
+    const accomulate = (mode, v1, v2) => {
+        if(mode==="combine") {
+            return accFunc.combine(v1,v2)
+        }
+        else if(mode==="finalize"){
+            return accFunc.finalize(v1)
+        }
+        else {
+            throw "error - invalid function";
+        }
+    }
+
+    //라우팅 테이블 만들기
+    const baseStringify = {
+        string(curr, stack, i, arr, acc){
+            return {i, arr, acc:accFunc.combine(acc, `"${curr.replaceAll('"', '\\"')}"`)};
+        },
+        boolean(curr, stack, i, arr, acc){
+            return {i, arr, acc:accFunc.combine(acc, `${curr}`)};
+        },
+        number(curr, stack, i, arr, acc){
+            return {i, arr, acc:accFunc.combine(acc, `${curr}`)};
+        },
+        ["undefined"](curr, stack, i, arr, acc){
+            return {i, arr, acc:accFunc.combine(acc, `null`)};
+        },
+        array(curr, stack, i, arr, acc){
+            stack.push({arr, i:i+1, acc});
+            return {i:-1, arr:curr, acc:""};
+        },
+    }
+
+    //라우팅 테이블로 부분적인 분기를 밖으로 빼줘서 분리해준다(디자인) -> 관리가 쉬워짐, 변수의 라이프사이클도 줄어드니까
+    const stringify = arrX => {
+        let arr = arrX, i = 0, acc = "";
+        const stack = [];
         do {
             for(; i<arr.length; i++) {
                 const curr = arr[i];
-                if(curr instanceof Array){
-                    stack.push({arr, i:i+1, acc});
-                    i=-1; acc=""; arr=curr;
-                }
-                else{
-                    switch (typeof curr) {
-                        case "number": {
-                            if (isNaN(curr))
-                                throw "error - invalid value";
-                            acc= acc + `,${curr}`;
-                            break;
-                        }
-                        case "boolean": {
-                            acc = acc + `,${curr}`;
-                            break;
-                        }
-                        case "string": {
-                            acc = acc + `,"${curr}"`;
-                            break;
-                        }
-                        default : {
-                            throw "error - invalid value";
-                        }
-                    }
-                }//end else
-            }//end for
+                let key = typeof curr;
+                if (curr instanceof Array) key = "array";
 
+                if (!(key in baseStringify)) throw `index ${i} contains unacceptable elepent: "${key}".`;
+                ({acc, i, arr} = baseStringify[key](curr, stack, i, arr, acc));
+            }
+
+            acc = accomulate("finalize", acc);
             if(stack.length===0) break;
             ({arr,i,acc:mainAcc} = stack.pop());
-            acc=`${mainAcc},${combine(acc)}`;
+            acc = accomulate("combine", mainAcc, acc);
         }//do-end
         while (true);
 
-        return combine(acc);
+        return acc;
     }
 
     // const ARR = [1, "안녕", [2, "하이"], true, {a:0}, null, NaN, undefined];
-    const ARR = [1, "안녕", [[],[[]]], [2, "하이"], true];
+    const ARR = [1, "안녕", [[],[[]]], [2, "제 이름은 \"선우\" 입니다"], true];
     // const ARR = [1, [], 4];
     // const ARR = [1, [2, 3], 4];
     // const ARR = [1, 2];

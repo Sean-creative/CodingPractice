@@ -2,81 +2,78 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>stringifyLoop4 210215</title>
+    <title>stringifyLoop5 210220</title>
 </head>
 <body>
 <script>
-    // - 객체해체는 선언이후 할당하려면 괄호를 써주어야 한다
-    // - while문 안에 while문 (2차루프- 인덱스루프로 해결)
-    // - 제어센터도 한군데로 모으기
-    // - 예외케이스가 위에 있는게 좋다.
-    // - 결합과정은 한군데에 있으면 좋다..
+    //do-while문안에 for루프 사용하여, 배열일때만 스택이 생기게 하기
+    //인덱스를 진행하기 위해 스택을 상용할 필요가 없다.(큰 while을 돌 필요가 X)
 
-    // 위에 있던 내용들 아래로 내림
+    const stringify = arrX => {
 
-    // do {
-    //     while(idx > length)
-    //     arr[i] array
-    //     break
-    // } while(stack);
+        //한 세트라고 인식하게 해서, 둘 다 바꿔야 한다는것을 인식하게 할 수 있게 해준다.
+        const accFunc = {
+            combine: (v1,v2) => {return `${v1},${v2}`},
+            finalize: v => {return`[${v.substr(1)}]`}
+        }
 
-    const stringify = ARR => {
-        const combine = v => `[${v.substr(1)}]`;
-        let arr = ARR;
-        let idx = 0;
-        let acc='';
+        //결합도 Down, 응집도 Up -> 분기는 많아질 수 있지만, 변화율이 떨어지니까 함수로 묶어준다.
+        const accomulate = (mode, v1, v2) => {
+            if(mode==="combine") {
+                return accFunc.combine(v1,v2)
+            }
+            else if(mode==="finalize"){
+                return accFunc.finalize(v1)
+            }
+            else {
+                throw "error - invalid function";
+            }
+        }
+
+        let arr = arrX, i=0, acc="";
         const stack = [];
 
         do {
-            if (idx !== arr.length) {
-                switch (typeof arr[idx]) {
-                    case "number": {
-                        if (isNaN(arr[idx]))
-                            throw "error - invalid value";
-                        stack.push({arr, idx: idx + 1, acc: acc + `,${arr[idx]}`});
-                        break;
-                    }
-                    case "boolean": {
-                        stack.push({arr, idx: idx + 1, acc: acc + `,${arr[idx]}`});
-                        break;
-                    }
-                    case "string": {
-                        stack.push({arr, idx: idx + 1, acc: acc + `,"${arr[idx]}"`});
-                        break;
-                    }
-                    case "object": {
-                        if (arr[idx] instanceof Array) {
-                            stack.push({arr, idx: idx + 1, acc}); //끝내고 돌아갈 곳
-                            //빈 배열일때는 따로 체크를 해준다.
-                            stack.push({arr: arr[idx], idx: 0, acc: (arr[idx].length === 0 ? "," : "")});
+            for(; i<arr.length; i++) {
+                const curr = arr[i];
+                if(curr instanceof Array){
+                    stack.push({arr, i:i+1, acc});
+                    i=-1; acc=""; arr=curr;
+                }
+                else{
+                    switch (typeof curr) {
+                        case "number": {
+                            if (isNaN(curr))
+                                throw "error - invalid value";
+                            acc=accomulate("combine", acc, curr)
                             break;
-                        } else {
+                        }
+                        case "boolean": {
+                            acc=accomulate("combine", acc, curr)
+                            break;
+                        }
+                        case "string": {
+                            acc=accomulate("combine", acc, `"${curr.replaceAll('"', '\\"')}"`)
+                            break;
+                        }
+                        default : {
                             throw "error - invalid value";
                         }
                     }
-                    default : {
-                        throw "error - invalid value";
-                    }
-                }
-            }
-            else {
-                    if (stack.length > 0) {
-                        let {arr, idx, acc: mainAcc} = stack.pop();
-                        stack.push({arr, idx, acc:`${mainAcc},${combine(acc)}`});
-                    }
-                    else {
-                        break;
-                    }
-            }
-            ({arr, idx, acc} = stack.pop());
+                }//end else
+            }//end for
+
+            if(stack.length===0) break;
+            ({arr,i,acc:mainAcc} = stack.pop());
+            acc=accomulate("combine", mainAcc, accomulate("finalize", acc));
         }//do-end
         while (true);
 
-        return combine(acc);
+        return accomulate("finalize", acc);
     }
 
     // const ARR = [1, "안녕", [2, "하이"], true, {a:0}, null, NaN, undefined];
-    const ARR = [1, "안녕", [[],[[]]], [2, "하이"], true];
+    const ARR = [1, "안녕", [[],[[]]], [2, "제 이름은 \"선우\" 입니다"], true];
     // const ARR = [1, [], 4];
     // const ARR = [1, [2, 3], 4];
     // const ARR = [1, 2];
