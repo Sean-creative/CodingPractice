@@ -10,7 +10,10 @@
     //한 세트라고 인식하게 해서, 둘 다 바꿔야 한다는것을 인식하게 할 수 있게 해준다.
     const accFunc = {
         combine: (v1,v2) => {return `${v1},${v2}`},
-        finalize: v => {return`[${v.substr(1)}]`}
+        finalize: v => {return`[${v.substr(1)}]`},
+
+        objCombine: (v1,v2) => {return `${v1},${v2}`},
+        objFinalize: v => {return`[${v.substr(1)}]`}
     }
 
     //결합도 Down, 응집도 Up -> 분기는 많아질 수 있지만, 변화율이 떨어지니까 함수로 묶어준다.
@@ -49,7 +52,7 @@
 
     //라우팅 테이블로 부분적인 분기를 밖으로 빼줘서 분리해준다(디자인) -> 관리가 쉬워짐, 변수의 라이프사이클도 줄어드니까
     const stringify = arrX => {
-        let arr = arrX, i = 0, acc = "";
+        let arr = arrX, i = 0, acc = "", type="";
         const stack = [];
         do {
             for(; i<arr.length; i++) {
@@ -71,7 +74,9 @@
     }
 
     // const ARR = [1, "안녕", [2, "하이"], true, {a:0}, null, NaN, undefined];
-    const ARR = [1, "안녕", [[],[[]]], [2, "제 이름은 \"선우\" 입니다"], true];
+    // const ARR = [1, "안녕", [[],[[]]], [2, "제 이름은 \"선우\" 입니다"], true];
+    // const ARR = {a:[1,[2,{b:[1,2]}]]};
+    const ARR = {a:[1], b:[2]};
     // const ARR = [1, [], 4];
     // const ARR = [1, [2, 3], 4];
     // const ARR = [1, 2];
