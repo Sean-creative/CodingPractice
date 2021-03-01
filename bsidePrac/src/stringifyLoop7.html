@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>stringifyLoop6 210224</title>
+    <title>stringifyLoop6 210301</title>
 </head>
 <body>
 <script>
@@ -12,8 +12,8 @@
         combine: (v1,v2) => {return `${v1},${v2}`},
         finalize: v => {return`[${v.substr(1)}]`},
 
-        objCombine: (v1,v2) => {return `${v1},${v2}`},
-        objFinalize: v => {return`[${v.substr(1)}]`}
+        objCombine: (v1,v2) => {return `"${v1}":"${v2}"`},
+        objFinalize: v => {return`{${v.substr(1)}}`}
     }
 
     //결합도 Down, 응집도 Up -> 분기는 많아질 수 있지만, 변화율이 떨어지니까 함수로 묶어준다.
@@ -24,6 +24,12 @@
         else if(mode==="finalize"){
             return accFunc.finalize(v1)
         }
+        else if(mode==="objCombine"){
+            return accFunc.objCombine(v1,v2)
+        }
+        else if(mode==="objFinalize"){
+            return accFunc.objFinalize(v1)
+        }
         else {
             throw "error - invalid function";
         }
@@ -32,20 +38,21 @@
     //라우팅 테이블 만들기 - 문을 통해 하던것을 값으로 변경하였으며,
     //다양한 작업을 하나로 모음 - 배열이라면, 배열아니라면, 그 외 것들처리
     const baseStringify = {
-        string(curr, stack, i, arr, acc){
-            return {i, arr, acc:accomulate("combine", acc, `"${curr.replaceAll('"', '\\"')}"`)};
+        string(curr, stack, i, arr, acc, type){
+            if(type==="Entries") return {i, arr, acc:accomulate("objFinalize", acc, `"${curr.replaceAll('"', '\\"')}"`)};
+            else return {i, arr, acc:accomulate("combine", acc, `"${curr.replaceAll('"', '\\"')}"`)};
         },
-        boolean(curr, stack, i, arr, acc){
+        boolean(curr, stack, i, arr, acc, type){
             return {i, arr, acc:accomulate("combine", acc, curr)};
         },
-        number(curr, stack, i, arr, acc){
+        number(curr, stack, i, arr, acc, type){
             return {i, arr, acc:accomulate("combine", acc, curr)};
         },
-        ["undefined"](curr, stack, i, arr, acc){
+        ["undefined"](curr, stack, i, arr, acc, type){
             return {i, arr, acc:accomulate("combine", acc, "null")};
         },
-        array(curr, stack, i, arr, acc){
-            stack.push({arr, i:i+1, acc});
+        array(curr, stack, i, arr, acc, type){
+            stack.push({arr, i:i+1, acc, type:"Array"});
             return {i:-1, arr:curr, acc:""};
         },
     }
@@ -54,15 +61,26 @@
     const stringify = arrX => {
         let arr = arrX, i = 0, acc = "", type="";
         const stack = [];
+
+        //처음에 들어온 값이 배열이 아니라면
+        // if(!(arr instanceof Array)) {
+        //     (baseStringify[typeof arr]());
+        // }
         do {
             for(; i<arr.length; i++) {
-                const curr = arr[i];
-                let key = "";
-                if (curr instanceof Array) key = "array";
+                let curr = arr[i], key = "";
+
+                if (typeof curr === "object"){
+                    if (curr instanceof Array) key = "array", type = "Array";
+                    else { //객체라면
+                        curr = Object.entries(curr);
+                        key = "array", type = "Entries";
+                    }
+                }
                 else key = typeof curr;
 
                 if (!(key in baseStringify)) throw `error - invalid key : ${key}`;
-                ({acc, i, arr} = baseStringify[key](curr, stack, i, arr, acc));
+                ({acc, i, arr} = baseStringify[key](curr, stack, i, arr, acc, type));
             }
             acc = accomulate("finalize", acc);
             if(stack.length===0) break;
@@ -76,7 +94,9 @@
     // const ARR = [1, "안녕", [2, "하이"], true, {a:0}, null, NaN, undefined];
     // const ARR = [1, "안녕", [[],[[]]], [2, "제 이름은 \"선우\" 입니다"], true];
     // const ARR = {a:[1,[2,{b:[1,2]}]]};
-    const ARR = {a:[1], b:[2]};
+    const ARR = [{a:1, b:2}];
+    // const ARR = {a:1, b:2};
+    // const ARR = 3;
     // const ARR = [1, [], 4];
     // const ARR = [1, [2, 3], 4];
     // const ARR = [1, 2];
