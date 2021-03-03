@@ -3,11 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>day3</title>
+    <style>
+        div{height: 100px;width: 100px;overflow: auto;}
+        p{height: 1000px;width: 1000px;background-color: red;}
+    </style>
 </head>
 
 <body>
 
-<div style="width:100px;height:100px;border:10px solid aqua;padding:50px;background-color: black"> </div>
+<!--<div style="width:100px;height:100px;border:10px solid aqua;padding:50px;background-color: black"> </div>-->
+
+<div><p></p></div>
+
+<script>
+
+    let div = document.querySelector('div');
+    div.scrollTop=900;
+    div.scrollLeft=900;
+</script>
 
 
 </body>
