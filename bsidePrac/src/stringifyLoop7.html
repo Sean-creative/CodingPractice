@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>stringifyLoop6 210301</title>
+    <title>stringifyLoop7 210301</title>
 </head>
 <body>
 <script>
@@ -12,7 +12,7 @@
         combine: (v1,v2) => {return `${v1},${v2}`},
         finalize: v => {return`[${v.substr(1)}]`},
 
-        objCombine: (v1,v2) => {return `"${v1}":"${v2}"`},
+        objCombine: (v1,v2) => {return `${v1}:${v2}`},
         objFinalize: v => {return`{${v.substr(1)}}`}
     }
 
@@ -39,25 +39,26 @@
     //다양한 작업을 하나로 모음 - 배열이라면, 배열아니라면, 그 외 것들처리
     const baseStringify = {
         string(curr, stack, i, arr, acc, type){
-            if(type==="Entries") return {i, arr, acc:accomulate("objFinalize", acc, `"${curr.replaceAll('"', '\\"')}"`)};
-            else return {i, arr, acc:accomulate("combine", acc, `"${curr.replaceAll('"', '\\"')}"`)};
+            if(type==="Entries") return {i, arr, acc:accomulate("objCombine", acc, `"${curr.replaceAll('"', '\\"')}"`), type};
+            else return {i, arr, acc:accomulate("combine", acc, `"${curr.replaceAll('"', '\\"')}"`), type};
         },
         boolean(curr, stack, i, arr, acc, type){
-            return {i, arr, acc:accomulate("combine", acc, curr)};
+            return {i, arr, acc:accomulate("combine", acc, curr), type};
         },
         number(curr, stack, i, arr, acc, type){
-            return {i, arr, acc:accomulate("combine", acc, curr)};
+            if(type==="Entries") return {i, arr, acc:accomulate("objCombine", acc, curr), type};
+            else return {i, arr, acc:accomulate("combine", acc, curr), type};
         },
         ["undefined"](curr, stack, i, arr, acc, type){
-            return {i, arr, acc:accomulate("combine", acc, "null")};
+            return {i, arr, acc:accomulate("combine", acc, "null"), type};
         },
         array(curr, stack, i, arr, acc, type){
             stack.push({arr, i:i+1, acc, type:"Array"});
-            return {i:-1, arr:curr, acc:""};
+            return {i:-1, arr:curr, acc:"", type};
         },
         entries(curr, stack, i, arr, acc, type){
             stack.push({arr, i:i+1, acc, type});
-            return {i:-1, arr:curr, acc:"", type};
+            return {i:-1, arr:Object.entries(curr), acc:"", type};
         },
     }
 
@@ -75,10 +76,8 @@
                 let curr = arr[i], key = "";
 
                 if (typeof curr === "object"){
-                    if (curr instanceof Array) key = "array", type = "Array";
+                    if (curr instanceof Array) key = "array";
                     else { //객체라면
-                        curr = Object.entries(curr);
-                        console.log(curr.toString());
                         key = "entries", type = "Entries";
                     }
                 }
@@ -87,24 +86,27 @@
                 if (!(key in baseStringify)) throw `error - invalid key : ${key}`;
                 ({acc, i, arr, type} = baseStringify[key](curr, stack, i, arr, acc, type));
             }
-            acc = accomulate("finalize", acc);
+
+            acc = (type!=="Entries")?accomulate("finalize", acc):accomulate("objFinalize", acc);
             if(stack.length===0) break;
-            ({arr,i,acc:mainAcc} = stack.pop());
+            ({arr,i,acc:mainAcc, type} = stack.pop());
             acc = accomulate("combine", mainAcc, acc);
         }//do-end
         while (true);
-        return acc;
+        return (type!=="Entries")?accomulate("finalize", acc):acc;
     }
 
     // const ARR = [1, "안녕", [2, "하이"], true, {a:0}, null, NaN, undefined];
     // const ARR = [1, "안녕", [[],[[]]], [2, "제 이름은 \"선우\" 입니다"], true];
     // const ARR = {a:[1,[2,{b:[1,2]}]]};
     const ARR = [{a:1, b:2}];
+
     // const ARR = {a:1, b:2};
     // const ARR = 3;
     // const ARR = [1, [], 4];
     // const ARR = [1, [2, 3], 4];
     // const ARR = [1, 2];
+    // const ARR = [{a:1}];
     console.log('stringify(arr) = ' + stringify(ARR));
     console.log('JSON.stringify(arr) = ' + JSON.stringify(ARR));
     console.log('stringify(arr) === JSON.stringify(arr) ==> ' + (stringify(ARR)=== JSON.stringify(ARR)));
