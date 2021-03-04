@@ -55,6 +55,10 @@
             stack.push({arr, i:i+1, acc, type:"Array"});
             return {i:-1, arr:curr, acc:""};
         },
+        entries(curr, stack, i, arr, acc, type){
+            stack.push({arr, i:i+1, acc, type});
+            return {i:-1, arr:curr, acc:"", type};
+        },
     }
 
     //라우팅 테이블로 부분적인 분기를 밖으로 빼줘서 분리해준다(디자인) -> 관리가 쉬워짐, 변수의 라이프사이클도 줄어드니까....
@@ -74,13 +78,14 @@
                     if (curr instanceof Array) key = "array", type = "Array";
                     else { //객체라면
                         curr = Object.entries(curr);
-                        key = "array", type = "Entries";
+                        console.log(curr.toString());
+                        key = "entries", type = "Entries";
                     }
                 }
                 else key = typeof curr;
 
                 if (!(key in baseStringify)) throw `error - invalid key : ${key}`;
-                ({acc, i, arr} = baseStringify[key](curr, stack, i, arr, acc, type));
+                ({acc, i, arr, type} = baseStringify[key](curr, stack, i, arr, acc, type));
             }
             acc = accomulate("finalize", acc);
             if(stack.length===0) break;
