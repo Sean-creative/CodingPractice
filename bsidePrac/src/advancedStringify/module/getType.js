@@ -10,6 +10,8 @@ const getType = v => {
     else throw `invalid type of :${v}`;
 };
 const types = {}, addType =(k, type, stringify, closer, parser)=>k.split(",").forEach(k=>types[k] = {type, stringify, closer, parser});
+
+//addType이란 함수를 만들어 놓고, 하나씩 등록하는 것
 addType("string", k=>k, ((rString = /(")/g)=>v=>`"${v.replace(rString, "\\$1")}"`)());
 addType("bigint", _=>"number",v=>v.toString());
 addType("number,boolean", k=>k,v=>v.toString());
@@ -29,7 +31,9 @@ addType("object", _=>"object",
     },
     acc=>`${acc}}`
 );
+
 const getStringify=v=>types[getType(v)].stringify;
 const getCloser=v=>types[v].closer;
+
 
 export {getType, getCloser, getStringify};

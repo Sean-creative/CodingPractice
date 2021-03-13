@@ -1,0 +1,34 @@
+<html>
+<head>
+
+</head>
+<body>
+
+<script>
+    // const addType =(k, type, stringify, closer, parser)=>k.split(",").forEach(k=>types[k] = {type, stringify, closer, parser});
+
+    class Person {
+        constructor(name) {
+            this.name = name;
+        }
+
+        sayHi() {
+            console.log(`Hi My name is ${this.name}`);
+        }
+
+        static sayHello() {
+            console.log('Hello!');
+        }
+    }
+
+    const me = new Person('Sean');
+    me.sayHi();
+    Person.sayHello();
+
+
+
+</script>
+
+
+</body>
+</html>

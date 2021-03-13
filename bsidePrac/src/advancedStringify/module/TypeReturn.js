@@ -11,5 +11,6 @@ const TypeReturn = class{
         return TypeReturn.#instance;
     };
 };
+//왜 init을 하게 해주었을까??
 TypeReturn.init();
 export {TypeReturn};
